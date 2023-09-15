@@ -53,7 +53,7 @@ class controllerFuncionario {
             if (result.rows.length === 0) {
                 res.status(404).send('Funcionario no encontrado');
             } else {
-                res.json({ message: 'Funcionario eliminado correctamente' });
+                res.json({ message: 'Funcionario eliminado correctamente' , ok : true});
             }
         } catch (error) {
             console.error(error);
