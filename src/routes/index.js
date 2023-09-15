@@ -25,7 +25,7 @@ router.use('/usr',user);
 router.use('/activo',activo);
 router.use('/act_alta',alta);
 router.use('/ambiente',ambiente)
-router.use('backup',backup);
+router.use('/backup',backup);
 router.use('/baja',baja)
 router.use('/cantidad',cantidad)
 router.use('/condicion',condicion)

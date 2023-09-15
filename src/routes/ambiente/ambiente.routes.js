@@ -4,6 +4,7 @@ const controllerAmbiente  = require('../../controllers/ambiente/ambiente.control
 
 router.post('/registrar',controllerAmbiente.postAmbiente);
 router.get('/:id',controllerAmbiente.getAmbienteById);
+router.get('/',controllerAmbiente.getAmbiente);
 router.put('/editar/:id',controllerAmbiente.putAmbiente);
 router.delete('/eliminar/:id',controllerAmbiente.deleteAmbiente);
 

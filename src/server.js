@@ -29,7 +29,7 @@ class Server {
 
   listen() {
     this.app.listen(this.port, async () => {
-      await database.sync();
+      //await database.sync();
       console.log('Servidor corriendo en puerto:', this.port);
     });
   }
