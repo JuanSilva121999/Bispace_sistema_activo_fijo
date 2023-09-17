@@ -14,12 +14,12 @@ class controllerUsuario {
             const query = 'SELECT us.idUsuario, em.Nombres, em.Apellidos, us.Email, us.Password, us.Rol, us.Estado FROM usuarios us INNER JOIN empleados em ON us.idEmplead=em.idEmpleado WHERE us.Email = $1';
             const values = [data.Email];
             const result = await pool.query(query, values);
-            const user  =  result.rows;
-            //console.log(user.length);
+            const user = result.rows;
+            console.log(user.length);
             if (user.length) {
-                const datos =  user[0]
+                const datos = user[0]
                 //console.log(datos);
-                bcrypt.compare(data.Password, datos.password, function(err, check) {
+                bcrypt.compare(data.Password, datos.password, function (err, check) {
                     console.log(datos);
                     if (check === true) {
                         console.log(data.gettoken);
@@ -28,20 +28,20 @@ class controllerUsuario {
                                 jwt: jwt.createToken(datos),
                                 user: datos,
                                 // decodi: jwto.verify(jwt.createToken(usuario_data[0]), secret)
-                                });
-                        }else{
+                            });
+                        } else {
                             res.status(200).send({
                                 user: datos,
                                 message: 'no token',
                                 jwt: jwt.createToken(datos),
-                                });
+                            });
                         }
                     } else {
-                        res.status(403).send({message: 'El corre o contraseña no coinciden'});
+                        res.status(403).send({ message: 'El corre o contraseña no coinciden' });
                     }
-                  });
+                });
             } else {
-                res.status(403).json({message: 'El correo no existe'});
+                res.status(403).json({ message: 'El correo no existe' });
             }
         } catch (error) {
             res.status(500).send(error.message);
@@ -108,20 +108,37 @@ class controllerUsuario {
     }
     static async putUsuario(req, res) {
         console.log(req.body);
-        const {idUsuario,idEmpleado,Email,Rol,Estado}= req.body ;
+        const { idUsuario, idEmplead, Email, Password, Rol, Estado } = req.body;
+        console.log(Password);
         try {
-            const query = 'UPDATE usuarios SET  idemplead = $1, email = $2, rol = $3, estado = $4 WHERE idusuario = $5 RETURNING *';
-            const values = [idEmpleado,Email,Rol,Estado,idUsuario];
-            const result = await pool.query(query, values);
-            if (result.rows.length === 0) {
-              res.status(404).send('Usuario no encontrado');
+            if (Password == undefined) {
+                const query = 'UPDATE usuarios SET  idemplead = $1, email = $2, rol = $3, estado = $4 WHERE idusuario = $5 RETURNING *';
+                const values = [idEmplead, Email, Rol, Estado, idUsuario];
+                const result = await pool.query(query, values);
+                if (result.rows.length === 0) {
+                    res.status(404).send('Usuario no encontrado');
+                } else {
+                    res.json(result.rows[0]);
+                }
             } else {
-              res.json(result.rows[0]);
+                bcrypt.hash(Password, 10, async function (err, hash) {
+                    const query = 'UPDATE usuarios SET  idemplead = $1, email = $2, rol = $3, password  =$4,estado = $5 WHERE idusuario = $6 RETURNING *';
+                    const values = [idEmplead, Email, Rol,hash, Estado, idUsuario];
+                    const result = await pool.query(query, values);
+                    if (result.rows.length === 0) {
+                        res.status(404).send('Usuario no encontrado');
+                    } else {
+                        res.json(result.rows[0]);
+                    }
+
+
+                });
             }
-          } catch (error) {
+
+        } catch (error) {
             console.error(error);
             res.status(500).send('Error al actualizar el Empleado');
-          }
+        }
     }
 }
 

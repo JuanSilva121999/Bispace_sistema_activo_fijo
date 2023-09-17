@@ -3,6 +3,7 @@ const router=require("express").Router();
 const controllerTipoActivo  = require('../../controllers/tipoactivo/tipoactivo.controller');
 
 router.post('/registrar',controllerTipoActivo.posttipoActivo);
+router.get('/',controllerTipoActivo.getipoActivot);
 router.get('/:id',controllerTipoActivo.gettipoActivoById);
 router.put('/editar/:id',controllerTipoActivo.puttipoActivo);
 router.delete('/eliminar/:id',controllerTipoActivo.deletetipoActivo);
