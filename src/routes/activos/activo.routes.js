@@ -5,8 +5,8 @@ var path = multipart({uploadDir: './src/uploads/activos'});
 const controllerActivo  = require('../../controllers/activo/activo.controller');
 
 router.post('/registrar',path,controllerActivo.postActivo);
-router.get('/:nombre?',controllerActivo.getActivoCodigo);
-router.put('/editar/:id/:img',controllerActivo.putActivo);
+router.get('/',controllerActivo.getActivoCodigo);
+router.put('/editar/:id/:img',path,controllerActivo.putActivo);
 router.get('/:id',controllerActivo.getActivoById);
 router.delete('/eliminar/:id',controllerActivo.deleteActivo);
 

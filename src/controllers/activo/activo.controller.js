@@ -44,7 +44,7 @@ class controllerActivo {
                 res.status(200).json(result.rows[0]);
             } catch (error) {
                 console.log(error);
-                res.status(403).send({message: 'No se registro el activo fijo'});
+                res.status(403).send({ message: 'No se registro el activo fijo' });
             }
 
         }
@@ -53,7 +53,7 @@ class controllerActivo {
     };
     static async getActivoCodigo(req, res) {
         try {
-            const query  = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado<>'Baja' ;"
+            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado<>'Baja' ;"
             const result = await pool.query(query);
             res.status(200).send({ activos: result.rows });
         } catch (error) {
@@ -62,10 +62,68 @@ class controllerActivo {
         }
     };
     static async putActivo(req, res) {
-        console.log('buscar');
+        try {
+            const id = req.params.id;
+            const data = req.body; 
+            //console.log(req.body);
+            var img = req.params['img'];
+            //console.log(id, ' ', img );        
+            if (req.files.Imagen) {
+                if (img || img != null || img != undefined) {
+                    fs.unlink('./src/uploads/activos/' + img, (err) => {
+                        if (err) throw err;
+                    });//eliminar la imagen
+                }
+                const imagen_path = req.files.Imagen.path; //asignar la ruta donde esta la imagen
+                const name = imagen_path.split('\\');//split crea un array y separa el nombre de la imagen
+                const imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
+                //console.log(imagen_name);
+                const activo = {
+                    idTipo: data.idTipo,
+                    Imagen: imagen_name,
+                    // Factura: factura_name,
+                    Garantia: data.Garantia,
+                    Procedencia: data.Procedencia,
+                    Descripcion: data.Descripcion,
+                    ValorRegistro: data.ValorRegistro,
+                    Observaciones: data.Observaciones,
+                    idCondicion: data.idCondicion,
+                    idRubro: data.idRubro,
+                    idProveedor: data.idProveedor
+                }
+                const query = 'UPDATE activos SET  idtipo= $1, imagen=$2,garantia  = $3,procedencia=$4,descripcion=$5,valorregistro=$6,observaciones= $7,idcondicion=$8,idrubro=$9,idproveedor=$10 WHERE idactivo = $11 RETURNING *';
+                const values=[activo.idTipo, activo.Imagen, activo.Garantia, activo.Procedencia, activo.Descripcion, activo.ValorRegistro, activo.Observaciones, activo.idCondicion, activo.idRubro, activo.idProveedor, id];
+                const result = await pool.query(query, values);
+                if (result.rows.length === 0) {
+                    res.status(404).send('activo no encontrado');
+                } else {
+                    res.json(result.rows[0]);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        }
+
     }
     static async getActivoById(req, res) {
-        console.log('añadir');
+
+        try {
+            const id = req.params.id;
+            const query = 'SELECT * FROM activos WHERE idactivo = $1';
+            const values = [id];
+
+            const result = await pool.query(query, values);
+            const resultado = result.rows;
+            console.log(resultado.length);
+            if (resultado.length !== 0) {
+                res.status(200).json(resultado);
+            } else {
+                res.status(404).send('Activo no  encontrado');
+            }
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
     }
     static async deleteActivo(req, res) {
         console.log('actualizar');
@@ -73,10 +131,10 @@ class controllerActivo {
     static async get_imagen(req, res) {
         var img = req.params['img'];
         res.status(200);
-        if(img != "null"){//ingresamos una imagen
-            let path_img = './src/uploads/activos/'+img;
+        if (img != "null") {//ingresamos una imagen
+            let path_img = './src/uploads/activos/' + img;
             res.status(200).sendFile(path.resolve(path_img));
-        }else{
+        } else {
             let path_img = './src/uploads/activos/default.jpg';
             res.status(200).sendFile(path.resolve(path_img));
         }
@@ -84,14 +142,14 @@ class controllerActivo {
     static async get_factura(req, res) {
         var img = req.params['fac'];
         console.log(img);
-        if(img != "null"){//ingresamos una imagen
-            let path_img = './src/uploads/activos/'+img;
+        if (img != "null") {//ingresamos una imagen
+            let path_img = './src/uploads/activos/' + img;
             res.status(200).sendFile(path.resolve(path_img));
-        }else{
+        } else {
             let path_img = './src/uploads/activos/default.jpg';
             res.status(200).sendFile(path.resolve(path_img));
         }
-    
+
     }
 
 }
