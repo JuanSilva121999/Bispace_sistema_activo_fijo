@@ -1,4 +1,5 @@
-const database = require("../../database/db");
+const pool = require("../../database/db");
+
 //const { QueryTypes, col } = require("sequelize");
 
 
@@ -7,7 +8,15 @@ class controllerEdificio{
         console.log('llenar activo');
     };
     static async getEdificio(req,res){
-        console.log('listar');
+        try {
+            const query  = 'SELECT * FROM edificios'
+            const result =  await pool.query(query);
+            res.status(200).send({edificios: result.rows});
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+            
+        }
     };
     static async getEdificioById(req,res){
         console.log('listar');

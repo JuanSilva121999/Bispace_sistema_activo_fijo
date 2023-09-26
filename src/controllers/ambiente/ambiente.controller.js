@@ -18,7 +18,7 @@ class controllerAmbiente{
         }
     };
     static async getAmbienteById(req,res){
-        console.log('listar');
+        console.log('Byis');
     };
     static async putAmbiente(req,res){
         console.log('listar');
@@ -27,10 +27,20 @@ class controllerAmbiente{
         console.log('listar');
     };
     static async getAmbienteName(req,res){
-        console.log('listar');
+        console.log('Byidsd');
     };
     static async getEdificioAmbienteById(req,res){
-        console.log('listar');
+        try {
+            const id =  req.params.id;
+            console.log(id);
+            const query  = 'SELECT * FROM ambientes WHERE idedificio  =  $1';
+            const result  = await pool.query(query,[id]);
+            //console.log(result.rows);
+            res.status(200).send({ambientes: result.rows});
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        }
     };
 }
 
