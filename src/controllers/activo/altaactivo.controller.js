@@ -70,7 +70,7 @@ class controllerAltaActivo {
     };
     static async getAltaActivo(req, res) {
         try {
-            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado='En Uso'  order by ac.idActivo ";
+            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado='Activo'  order by ac.idActivo ";
             const result = await pool.query(query);
             if (result.rows.length !== 0) {
                 //console.log(result.rows);
@@ -89,7 +89,24 @@ class controllerAltaActivo {
         }
     };
     static async getActivoAlta(req, res) {
-        console.log('Listar Activos en Alta');
+        try {
+            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado='En Uso'  order by ac.idActivo ";
+            const result = await pool.query(query);
+            if (result.rows.length !== 0) {
+                //console.log(result.rows);
+                res.status(200).send({ activos: result.rows , mensaje : 'ok'});
+            } else {
+                console.log("No hay ningun registro con el codigo o nombre del tipo de activo fijo");
+                res.status(403).send({
+                    activos: result.rows,
+                    message:
+                        "No hay ningun registro con el codigo o nombre del tipo de activo fijo",
+                });
+            }
+
+        } catch (error) {
+            res.status(500).send(error.message);
+        }
     };
     static async getEmpleadoAltaActivo(req, res) {
         try {
