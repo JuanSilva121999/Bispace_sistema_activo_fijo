@@ -4,7 +4,7 @@ const controllerDepreciacion  = require('../../controllers/depreciacion/deprecia
 
 router.post('/registrar',controllerDepreciacion.postDepreciacionActivo);
 router.get('/depreciaciones',controllerDepreciacion.getDepreciaciones)
-router.get('/:id',controllerDepreciacion.getDatosDepreciacionById);
+router.get('/datadepreciacion/:id',controllerDepreciacion.getDatosDepreciacionById);
 
 router.get('/:nombre?',controllerDepreciacion.getActivosDepreciacionCodigo);
 

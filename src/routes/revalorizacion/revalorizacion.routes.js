@@ -6,7 +6,7 @@ router.post('/registrar',controllerRevalorizacion.postRevalorizacion);
 router.get('/:id',controllerRevalorizacion.getRevalorizacionById);
 router.put('/editar/:id',controllerRevalorizacion.putRevalorizacion);
 router.delete('/eliminar/:id',controllerRevalorizacion.deleteRevalorizacion);
-router.get('s/:nombre?',controllerRevalorizacion.getRevalorizacionName);
+router.get('/:nombre?',controllerRevalorizacion.getRevalorizacionName);
 
 
 

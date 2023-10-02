@@ -59,7 +59,29 @@ class controllerHistorial {
         console.log('listar');
     };
     static async getHistorialDepreciaciones(req, res) {
-        console.log('listar');
+        try {
+            const nombre = req.params['nombre'];
+            if (nombre === undefined) {
+                const historial_dep = await pool.query("SELECT * FROM activos ac INNER JOIN tiposactivos tip  ON tip.idTipo=ac.idTipo INNER JOIN depreciaciones dep ON ac.idActivo=dep.idActivo  order by dep.idActivo");
+                    if (historial_dep.rows.length) {
+                    res.status(200).send({ depreciaciones: historial_dep.rows });
+                } else {
+                    res.status(403).send({ message: 'No hay historial' });
+                }
+
+            } else {
+                await connection.query("SELECT * FROM activos ac INNER JOIN tiposactivos tip  ON tip.idTipo=ac.idTipo INNER JOIN depreciaciones dep ON ac.idActivo=dep.idActivo WHERE dep.idActivo REGEXP LOWER('" + nombre + "') OR ac.Descripcion REGEXP LOWER('" + nombre + "') OR tip.NombreActivo REGEXP LOWER('" + nombre + "') order by dep.idActivo", (err, historial_dep) => {
+                    if (historial_dep.length) {
+                        res.status(200).send({ depreciaciones: historial_dep });
+                    } else {
+                        res.status(403).send({ message: 'No hay historial' });
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message);
+        }
     };
 
 
