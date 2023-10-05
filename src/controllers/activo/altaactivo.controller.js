@@ -90,7 +90,7 @@ class controllerAltaActivo {
     };
     static async getActivoAlta(req, res) {
         try {
-            const query = "SELECT * FROM activos AS ac INNER JOIN altaactivos AS alt ON alt.idactiv = ac.idactivo INNER JOIN tiposactivos AS tip ON ac.idtipo = tip.idtipo INNER JOIN condiciones AS cond ON cond.idcondicion = ac.idcondicion INNER JOIN proyectos AS pro ON pro.idproyecto = alt.idproyecto INNER JOIN ambientes AS am ON am.idambiente = alt.idambiente  INNER JOIN edificios AS ed ON ed.idedificio = am.idedificio INNER JOIN empleados AS em ON em.idempleado = alt.idempleado ORDER BY alt.idproyecto; ";
+            const query = "SELECT * FROM activos AS ac INNER JOIN altaactivos AS alt ON alt.idactiv = ac.idactivo INNER JOIN tiposactivos AS tip ON ac.idtipo = tip.idtipo INNER JOIN condiciones AS cond ON cond.idcondicion = ac.idcondicion INNER JOIN proyectos AS pro ON pro.idproyecto = alt.idproyecto INNER JOIN ambientes AS am ON am.idambiente = alt.idambiente  INNER JOIN edificios AS ed ON ed.idedificio = am.idedificio INNER JOIN empleados AS em ON em.idempleado = alt.idempleado where ac.estado = 'En Uso' ORDER BY alt.idproyecto; ";
             const result = await pool.query(query);
             if (result.rows.length !== 0) {
                 //console.log(result.rows);
