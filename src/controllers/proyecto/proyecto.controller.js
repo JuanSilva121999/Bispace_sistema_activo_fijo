@@ -79,12 +79,12 @@ class controllerProyecto {
         try{
             let fecha = new Date();
             let fecha_acual = `${fecha.getFullYear()}-${fecha.getMonth()+1}-${fecha.getDate()}`;
-            console.log(fecha_acual);
+            //console.log(fecha_acual);
             let proyectos_ejecucion= await pool.query(`SELECT * FROM proyectos proye
             INNER JOIN programas prog ON prog.idPrograma = proye.idPrograma
             WHERE proye.FechaFin >= '${fecha_acual}'`)
             proyectos_ejecucion =  proyectos_ejecucion.rows;
-            console.log(proyectos_ejecucion);
+            //console.log(proyectos_ejecucion);
                 if(proyectos_ejecucion.length > 0){
                     
                     res.status(200).send({proyectos: proyectos_ejecucion});

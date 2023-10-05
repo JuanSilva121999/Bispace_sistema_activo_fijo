@@ -8,7 +8,7 @@ class controllerEdificio {
     static async postEdificio(req, res) {
         try {
             const data =  req.body;
-            //console.log(data);
+            console.log(data);
             const result =  await pool.query("INSERT INTO public.edificios (nombreedi, servicio, direccion, idubicacion, latitud, longitud) VALUES($1, $2, $3, $4, $5, $6) RETURNING *;",[data.NombreEdi,data.Servicio,data.Direccion,data.idUbicacion,data.Latitud,data.Longitud])
             const edificio =  result.rows;
             res.status(200).send({ edificios: edificio, ok: true });
