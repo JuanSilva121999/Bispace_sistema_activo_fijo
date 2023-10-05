@@ -41,7 +41,21 @@ class controllerProyecto {
         }
     };
     static async putProyecto(req, res) {
-        console.log('listar');
+        try {
+            const data =  req.body
+            const id =  req.params.id
+            console.log(data);
+            const query =  `UPDATE public.proyectos
+            SET nombrepro=$1, fechainicio=$2, fechafin=$3, idprograma=$4
+            WHERE idproyecto=$5 RETURNING *;
+            `;
+            const result =  await pool.query(query,[data.NombrePro,data.FechaInicio,data.FechaFin,data.idPrograma,id])
+            const resultado =  result.rows;
+            res.status(200).send({proyecto: resultado});
+            } catch (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener el funcionario');
+        }
     };
     static async deleteProyecto(req, res) {
         const { id } = req.params;
@@ -62,7 +76,26 @@ class controllerProyecto {
         console.log('listar');
     };
     static async getProyectosEjecucion(req, res) {
-        console.log('Extra');
+        try{
+            let fecha = new Date();
+            let fecha_acual = `${fecha.getFullYear()}-${fecha.getMonth()+1}-${fecha.getDate()}`;
+            console.log(fecha_acual);
+            let proyectos_ejecucion= await pool.query(`SELECT * FROM proyectos proye
+            INNER JOIN programas prog ON prog.idPrograma = proye.idPrograma
+            WHERE proye.FechaFin >= '${fecha_acual}'`)
+            proyectos_ejecucion =  proyectos_ejecucion.rows;
+            console.log(proyectos_ejecucion);
+                if(proyectos_ejecucion.length > 0){
+                    
+                    res.status(200).send({proyectos: proyectos_ejecucion});
+                }else{
+                    res.status(200).send({message: 'No hay proyecto en ejecucion'});
+                }
+            
+        }catch(error){
+            console.log(error.message);
+            res.status(500).send(error.message);
+        } 
     }
 }
 

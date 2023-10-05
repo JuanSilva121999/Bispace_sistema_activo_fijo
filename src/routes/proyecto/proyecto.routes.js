@@ -9,7 +9,7 @@ router.put('/editar/:id',controllerProyecto.putProyecto);
 router.delete('/eliminar/:id',controllerProyecto.deleteProyecto);
 router.get('s/:nombre?',controllerProyecto.getProyectoName);
 
-router.get('secejucion',controllerProyecto.getProyectosEjecucion)
+router.get('/listar/ejecucion',controllerProyecto.getProyectosEjecucion)
 
 
 module.exports=router;
