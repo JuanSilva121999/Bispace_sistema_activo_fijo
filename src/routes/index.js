@@ -21,7 +21,7 @@ const revalorizacion= require('./revalorizacion/revalorizacion.routes')
 const rublo= require('./rublos/rulos.routes')
 const tipoactivo= require('./tipoactivo/tipoactivo.routes')
 const ubicacion= require('./ubicacion/ubicacion.routes')
-
+const qr =  require('./qrcont/qrcontr.routes')
 
 router.use('/usr',user);
 router.use('/activo',activo);
@@ -44,7 +44,7 @@ router.use('/revalorizacion',revalorizacion)
 router.use('/rubro',rublo)
 router.use('/tipoactivo',tipoactivo)
 router.use('/ubicacion',ubicacion)
-
+router.use('/generarQR' , qr)
 
 
 module.exports = router;
