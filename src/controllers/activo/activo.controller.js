@@ -40,6 +40,13 @@ class controllerActivo {
             const query = 'INSERT INTO activos (idtipo, imagen,factura,garantia,procedencia,descripcion,valorregistro,observaciones,ufvinicial,idcondicion,idrubro,idproveedor,valoractual) VALUES  ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$7) RETURNING *';
             const values = [activo.idTipo, activo.Imagen, activo.Factura, activo.Garantia, activo.Procedencia, activo.Descripcion, activo.ValorRegistro, activo.Observaciones, activo.UfvInicial, activo.idCondicion, activo.idRubro, activo.idProveedor];
             try {
+
+                const historial = await pool.query(`
+                INSERT INTO public.historialactivofijo
+                (codactivo, codempleado, codproyecto, codambiente, estado, fecha, proyecto, asignado_por)
+                VALUES(0, 0, 0, 0, '', CURRENT_TIMESTAMP, '', '');
+
+                `, [])
                 const result = await pool.query(query, values);
                 res.status(200).json(result.rows[0]);
             } catch (error) {
@@ -64,7 +71,7 @@ class controllerActivo {
     static async putActivo(req, res) {
         try {
             const id = req.params.id;
-            const data = req.body; 
+            const data = req.body;
             //console.log(req.body);
             var img = req.params['img'];
             //console.log(id, ' ', img );        
@@ -92,7 +99,7 @@ class controllerActivo {
                     idProveedor: data.idProveedor
                 }
                 const query = 'UPDATE activos SET  idtipo= $1, imagen=$2,garantia  = $3,procedencia=$4,descripcion=$5,valorregistro=$6,observaciones= $7,idcondicion=$8,idrubro=$9,idproveedor=$10 WHERE idactivo = $11 RETURNING *';
-                const values=[activo.idTipo, activo.Imagen, activo.Garantia, activo.Procedencia, activo.Descripcion, activo.ValorRegistro, activo.Observaciones, activo.idCondicion, activo.idRubro, activo.idProveedor, id];
+                const values = [activo.idTipo, activo.Imagen, activo.Garantia, activo.Procedencia, activo.Descripcion, activo.ValorRegistro, activo.Observaciones, activo.idCondicion, activo.idRubro, activo.idProveedor, id];
                 const result = await pool.query(query, values);
                 if (result.rows.length === 0) {
                     res.status(404).send('activo no encontrado');
@@ -129,26 +136,38 @@ class controllerActivo {
         console.log('actualizar');
     }
     static async get_imagen(req, res) {
-        var img = req.params['img'];
-        res.status(200);
-        if (img != "null") {//ingresamos una imagen
-            let path_img = './src/uploads/activos/' + img;
-            res.status(200).sendFile(path.resolve(path_img));
-        } else {
-            let path_img = './src/uploads/activos/default.jpg';
-            res.status(200).sendFile(path.resolve(path_img));
+        try {
+            var img = req.params['img'];
+            console.log(img);
+            res.status(200);
+            if (img != "null") {//ingresamos una imagen
+                let path_img = './src/uploads/activos/' + img;
+                res.status(200).sendFile(path.resolve(path_img));
+            } else {
+                let path_img = './src/uploads/activos/default.jpg';
+                res.status(200).sendFile(path.resolve(path_img));
+            }
+        } catch (error) {
+            console.log(error);
         }
+
     }
     static async get_factura(req, res) {
-        var img = req.params['fac'];
-        console.log(img);
-        if (img != "null") {//ingresamos una imagen
-            let path_img = './src/uploads/activos/' + img;
-            res.status(200).sendFile(path.resolve(path_img));
-        } else {
-            let path_img = './src/uploads/activos/default.jpg';
-            res.status(200).sendFile(path.resolve(path_img));
+        try {
+            var img = req.params['fac'];
+            console.log(img);
+            console.log(img);
+            if (img != "null") {//ingresamos una imagen
+                let path_img = './src/uploads/activos/' + img;
+                res.status(200).sendFile(path.resolve(path_img));
+            } else {
+                let path_img = './src/uploads/activos/default.jpg';
+                res.status(200).sendFile(path.resolve(path_img));
+            }
+        } catch (error) {
+            console.log(error);
         }
+
 
     }
 

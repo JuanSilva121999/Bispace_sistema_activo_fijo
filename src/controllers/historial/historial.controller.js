@@ -24,11 +24,6 @@ class controllerHistorial {
     };
 
 
-
-
-
-
-
     static async getHistorialActivosFijos(req, res) {
         try {
             const nombre = req.params['nombre'];
