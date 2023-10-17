@@ -104,7 +104,28 @@ class controllerActivo {
                 if (result.rows.length === 0) {
                     res.status(404).send('activo no encontrado');
                 } else {
-                    res.json(result.rows[0]);
+                    res.status(200).json(result.rows[0]);
+                }
+            }else{
+                const activo = {
+                    idTipo: data.idTipo,
+                    // Factura: factura_name,
+                    Garantia: data.Garantia,
+                    Procedencia: data.Procedencia,
+                    Descripcion: data.Descripcion,
+                    ValorRegistro: data.ValorRegistro,
+                    Observaciones: data.Observaciones,
+                    idCondicion: data.idCondicion,
+                    idRubro: data.idRubro,
+                    idProveedor: data.idProveedor
+                }
+                const query = 'UPDATE activos SET  idtipo= $1,garantia  = $2,procedencia=$3,descripcion=$4,valorregistro=$5,observaciones= $6,idcondicion=$7,idrubro=$8,idproveedor=$9 WHERE idactivo = $10 RETURNING *';
+                const values = [activo.idTipo, activo.Garantia, activo.Procedencia, activo.Descripcion, activo.ValorRegistro, activo.Observaciones, activo.idCondicion, activo.idRubro, activo.idProveedor, id];
+                const result = await pool.query(query, values);
+                if (result.rows.length === 0) {
+                    res.status(404).send('activo no encontrado');
+                } else {
+                    res.status(200).json(result.rows[0]);
                 }
             }
         } catch (error) {
