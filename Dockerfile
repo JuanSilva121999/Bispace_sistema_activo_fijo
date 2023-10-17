@@ -1,21 +1,20 @@
-FROM node
+# Usamos una imagen base de Node.js
+FROM node:18
 
-# Create app directory
-WORKDIR /usr/src/app
+# Establecemos el directorio de trabajo dentro del contenedor
+WORKDIR /app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-# copying packages first helps take advantage of docker layers
+# Copiamos el archivo package.json y package-lock.json para instalar dependencias
 COPY package*.json ./
 
+# Instalamos las dependencias
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
 
-# Bundle app source
+# Copiamos el resto de los archivos del backend al contenedor
 COPY . .
 
-EXPOSE 8080
+# Exponemos el puerto en el que se ejecutará tu servidor Node.js (ajusta según tu configuración)
+EXPOSE 5051
 
-CMD [ "npm", "run", "start" ]
+# Comando para iniciar el servidor Node.js
+CMD ["npm", "start"]
