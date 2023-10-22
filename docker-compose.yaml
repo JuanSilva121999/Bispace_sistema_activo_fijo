@@ -1,20 +1,24 @@
 version: '3'
 services:
-  # These are the configurations for our Node app
-  # When Docker Compose starts this container it will automatically
-  # use the Dockerfile in the directory to configure it
+  app:
+    build: .
+    depends_on:
+      - postgres
+    ports:
+      - "5051:5051"
+    volumes:
+      - ./:/usr/src/app/
+      - /usr/src/app/node_modules
+
   postgres:
-    image: postgres:14.3
+    image: postgres:14.1
     restart: always
     environment:
-      # You can set the value of environment variables
-      # in your docker-compose.yml file
-      # Our Node app will use these to connect
-      # to the database
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_NAME}
     ports:
-      # Standard port for PostgreSQL databases
-      - "5431:5432"
-    container_name: dba
+      - "5432:5432"
+    volumes:
+      - ./backup.sql:/docker-entrypoint-initdb.d/database-seed.sql
+    container_name: my-postgres-container
