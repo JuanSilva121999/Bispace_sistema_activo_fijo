@@ -5,8 +5,10 @@ const path = require('path');
 const pool = require("../../database/db");
 const { lock } = require("../../routes/condicion/condicion.routes");
 const { log } = require("console");
+const QRCode = require('qrcode');
+const PDF = require("html-pdf");
 //const { QueryTypes, col } = require("sequelize");
-
+const dominio = process.env.DOMINIO + 'activosqr/'
 
 class controllerActivo {
     static async postActivo(req, res) {
@@ -48,6 +50,18 @@ class controllerActivo {
 
                 `, [])
                 const result = await pool.query(query, values);
+                const activo =  result.rows[0]
+                try {
+
+                    const query = `SELECT * FROM activos a inner join rubros r on a.idrubro =  r.idrubro where a.idactivo = $1`
+                    let result = await pool.query(query,[activo.idactivo])
+                    result = result.rows
+                    //console.log(result.length);
+                    await procesarResult(result);
+                    //console.log(result);
+                } catch (error) {
+                    console.log(error.message);
+                }
                 res.status(200).json(result.rows[0]);
             } catch (error) {
                 console.log(error);
@@ -193,5 +207,51 @@ class controllerActivo {
     }
 
 }
+function formatDate(date) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(date).toLocaleDateString(undefined, options);
+}
+async function generarCodigo(datos) {
+    const data = datos;
+    const inicio = 'BP';
+    const format = datos.cod;
+    const vales = await pool.query(`select qr_cod_activo from qr_activo where left(qr_cod_activo,4) ilike '${inicio}${format}'`)
+    //console.log(vales.rows);
+    const cantidad = vales.rows.length;
+    //console.log(cantidad);
+    const numeracion = cantidad + 1
+    let numeroFormateado = numeracion.toString().padStart(4, '0');
+    const codigo = inicio + format + '-' + numeroFormateado
+    return codigo
+}
+async function procesarResult(result) {
+    for (const element of result) {
+        const cod = await generarCodigo(element);
+        const url = dominio + cod;
+        console.log(url);
+        try {
+            const data_url = await new Promise((resolve, reject) => {
+                QRCode.toDataURL(url, (err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
 
+            const qry = `
+          INSERT INTO public.qr_activo
+          (qr_image, qr_fecha_creacion, qr_fecha_emicion, qr_fecha_renovacion, qr_cod_activo, qr_id_activo, qr_estado)
+          VALUES($1, $2, $3, $4, $5, $6, $7) returning *;
+        `;
+
+            const values = [data_url, new Date(), new Date(), new Date(), cod, element.idactivo, 's'];
+            const result = await pool.query(qry, values);
+            //console.log("Elemento procesado con éxito");
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+}
 module.exports = controllerActivo;

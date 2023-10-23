@@ -123,79 +123,38 @@ class constrollerQR {
         }
     }
     static async imprimirQR(req, res) {
-        const options = {
-            format: "Letter",
-            width: "8cm",
-            height: "21cm",
-        };
         try {
             const id = 1; //id =idAmbiente
-            const data_alta = await pool.query(`SELECT qr_id, qr_image, qr_fecha_creacion, qr_fecha_emicion, qr_fecha_renovacion, qr_cod_activo, qr_id_activo, qr_estado FROM public.qr_activo;`)
+            const data_alta = await pool.query(`SELECT * FROM public.qr_activo as qa inner join activos a on a.idactivo = qa.qr_id_activo`)
+            await pool.query(`UPDATE public.qr_activo SET qr_fecha_renovacion=current_date`)
             if (data_alta.rows.length > 0) {
-
-                const generarHTML = (data) => {
-                    let html = `
-                        <html>
-                            <head>
-                            <style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-  }
-
-  .etiqueta {
-    border: 2px solid #000;
-    padding: 10px;
-    margin: 20px;
-    text-align: center;
-    background-color: #f9f9f9;
-  }
-
-  p {
-    margin: 0;
-    font-size: 14px;
-  }
-
-  img {
-    display: block;
-    margin: 10px auto;
-    max-width: 100px;
-    max-height: 100px;
-  }
-</style>
-                            </head>
-                        <body>
-                    `;
-
-                    data.forEach((fila) => {
-                        html += `
-                            <div>
-                            <p>ID: ${fila.qr_id}</p>
-                            <p>Nombre: ${fila.qr_cod_activo}</p>
-                            <img class "etiqueta" src="${fila.qr_image}" width="100" height="100" />
-                            <p>Emicion: ${formatDate(fila.qr_fecha_emicion)}</p>
-                            </div>
-                            `;
-                    });
-
-                    html += `
-                            </body>
-                            </html>
-                                `;
-
-                    return html;
-                };
-                const html = generarHTML(data_alta.rows);
-                //console.log(html);
-                PDF.create(html, options).toStream((err, stream) => {
-                    if (err) return res.end(err.stack);
-                    res.writeHead(200, {
-                        "Content-Type": "application/pdf",
-                        "Content-Disposition": `attachment;filename=${Date.now()}.pdf`,
-                    });
-                    stream.pipe(res);
-                });
+                res.status(200).json({
+                    ok: true ,
+                    message : 'Actualizado completo',
+                    data : data_alta.rows
+                })
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        }
+    }
+    static async imprimirQRById(req, res) {
+        try {
+            const id = req.params.id; //id =idAmbiente
+            const data_alta = await pool.query(`SELECT * FROM public.qr_activo as qa inner join activos a on a.idactivo = qa.qr_id_activo where qa.qr_cod_activo = $1`,[id])
+            await pool.query(`UPDATE public.qr_activo SET qr_fecha_renovacion=current_date where qr_cod_activo = $1`,[id])
+            if (data_alta.rows.length > 0) {
+                res.status(200).json({
+                    ok: true ,
+                    message : 'Actualizado completo',
+                    data : data_alta.rows
+                })
+            }else{
+                res.status(200).json({
+                    ok:false ,
+                    message : 'Ningun registro',
+                })
             }
         } catch (error) {
             console.log(error);

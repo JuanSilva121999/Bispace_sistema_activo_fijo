@@ -9,5 +9,6 @@ router.post('/buscarQR',controllerQR.buscarQR)
 router.delete('/eliminar/:id', controllerQR.deleteQR)
 router.get('/historial/:cod',controllerQR.historial)
 router.get('/imprimirQR',controllerQR.imprimirQR)
+router.get('/imprimirQR/:id',controllerQR.imprimirQRById)
 
 module.exports= router
