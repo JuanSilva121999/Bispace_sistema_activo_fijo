@@ -1,8 +1,8 @@
 const pool = require('../../database/db')
 const QRCode = require('qrcode');
 const fs = require('fs');
-const PDF=  require( "html-pdf");
-const dominio = process.env.DOMINIO+'activosqr/'
+const PDF = require("html-pdf");
+const dominio = process.env.DOMINIO + 'activosqr/'
 
 // Genera el código QR
 
@@ -64,18 +64,18 @@ class constrollerQR {
     }
     static async historial(req, res) {
         try {
-            const cod_activo =  req.params.cod
-            let info = await pool.query( `select * from qr_activo qa inner join activos a on a.idactivo = qa.qr_id_activo inner join tiposactivos ta on ta.idtipo= a.idtipo inner join condiciones c on c.idcondicion = a.idcondicion where qa.qr_cod_activo  = '${cod_activo}'`)
+            const cod_activo = req.params.cod
+            let info = await pool.query(`select * from qr_activo qa inner join activos a on a.idactivo = qa.qr_id_activo inner join tiposactivos ta on ta.idtipo= a.idtipo inner join condiciones c on c.idcondicion = a.idcondicion where qa.qr_cod_activo  = '${cod_activo}'`)
             //console.log(info.rows);
             if (!info.rows) {
                 res.status(200).json({
                     ok: false,
-                    message : 'El activo no se encuentra con un qr'
+                    message: 'El activo no se encuentra con un qr'
                 })
             }
             res.status(200).json({
                 ok: true,
-                activo : info.rows
+                activo: info.rows
             })
 
         } catch (error) {
@@ -88,7 +88,7 @@ class constrollerQR {
 
 
     }
-    static async imprimirQR(req,res){
+    static async imprimirQR1(req, res) {
         const options = {
             format: "Letter",
             width: "8cm",
@@ -122,7 +122,91 @@ class constrollerQR {
             res.status(500).send(error.message);
         }
     }
+    static async imprimirQR(req, res) {
+        const options = {
+            format: "Letter",
+            width: "8cm",
+            height: "21cm",
+        };
+        try {
+            const id = 1; //id =idAmbiente
+            const data_alta = await pool.query(`SELECT qr_id, qr_image, qr_fecha_creacion, qr_fecha_emicion, qr_fecha_renovacion, qr_cod_activo, qr_id_activo, qr_estado FROM public.qr_activo;`)
+            if (data_alta.rows.length > 0) {
 
+                const generarHTML = (data) => {
+                    let html = `
+                        <html>
+                            <head>
+                            <style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .etiqueta {
+    border: 2px solid #000;
+    padding: 10px;
+    margin: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  img {
+    display: block;
+    margin: 10px auto;
+    max-width: 100px;
+    max-height: 100px;
+  }
+</style>
+                            </head>
+                        <body>
+                    `;
+
+                    data.forEach((fila) => {
+                        html += `
+                            <div>
+                            <p>ID: ${fila.qr_id}</p>
+                            <p>Nombre: ${fila.qr_cod_activo}</p>
+                            <img class "etiqueta" src="${fila.qr_image}" width="100" height="100" />
+                            <p>Emicion: ${formatDate(fila.qr_fecha_emicion)}</p>
+                            </div>
+                            `;
+                    });
+
+                    html += `
+                            </body>
+                            </html>
+                                `;
+
+                    return html;
+                };
+                const html = generarHTML(data_alta.rows);
+                //console.log(html);
+                PDF.create(html, options).toStream((err, stream) => {
+                    if (err) return res.end(err.stack);
+                    res.writeHead(200, {
+                        "Content-Type": "application/pdf",
+                        "Content-Disposition": `attachment;filename=${Date.now()}.pdf`,
+                    });
+                    stream.pipe(res);
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        }
+    }
+
+}
+function formatDate(date) {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(date).toLocaleDateString(undefined, options);
 }
 async function generarCodigo(datos) {
     const data = datos;
@@ -139,36 +223,36 @@ async function generarCodigo(datos) {
 }
 async function procesarResult(result) {
     for (const element of result) {
-      const cod = await generarCodigo(element);
-      const url = dominio + cod;
+        const cod = await generarCodigo(element);
+        const url = dominio + cod;
         console.log(url);
-      try {
-        const data_url = await new Promise((resolve, reject) => {
-          QRCode.toDataURL(url, (err, data) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(data);
-            }
-          });
-        });
-  
-        const qry = `
+        try {
+            const data_url = await new Promise((resolve, reject) => {
+                QRCode.toDataURL(url, (err, data) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(data);
+                    }
+                });
+            });
+
+            const qry = `
           INSERT INTO public.qr_activo
           (qr_image, qr_fecha_creacion, qr_fecha_emicion, qr_fecha_renovacion, qr_cod_activo, qr_id_activo, qr_estado)
           VALUES($1, $2, $3, $4, $5, $6, $7) returning *;
         `;
-  
-        const values = [data_url, new Date(), new Date(), new Date(), cod, element.idactivo, 's'];
-        const result = await pool.query(qry, values);
-        //console.log("Elemento procesado con éxito");
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-  }
-  
-  // Llamar a la función para procesar los elementos
 
-  
+            const values = [data_url, new Date(), new Date(), new Date(), cod, element.idactivo, 's'];
+            const result = await pool.query(qry, values);
+            //console.log("Elemento procesado con éxito");
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
+}
+
+// Llamar a la función para procesar los elementos
+
+
 module.exports = constrollerQR

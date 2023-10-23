@@ -21,6 +21,8 @@ class controllerAltaActivo {
                     const respuesta = await pool.query(query, values);
                     const responsable = respuesta.rows[0];
                     console.log(responsable);
+
+                    await pool.query(`INSERT INTO public.historial_asignaciones(fecha_asignacion, empleado_id, equipo_id, detalle_asignacion)VALUES(current_date, $1, $2, $3);`,[data.CodEmpleado,data.CodActivo,data.CodProyecto])
                     const altaQR = {
                         Institucion: "Bispace SRL",
                         Fecha: new Date().toLocaleDateString(),

@@ -11,6 +11,7 @@ class controllerMantenimiento {
             const result = await pool.query(query, values);
             if (result) {
                 //console.log(result);
+                await pool.query(`INSERT INTO public.historial_mantenimiento (fecha_mantenimiento,equipo_id, detalle_mantenimiento) VALUES(current_date, $1, $2);`,[ data.idAct,`Informe: ${data.Informe}, costo : ${data.Costo}`])
                 res.status(200).send({
                     message: 'Activo fijo en mantenimiento',
                     mantenimiento: result

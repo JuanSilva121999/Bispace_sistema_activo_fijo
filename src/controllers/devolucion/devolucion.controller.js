@@ -22,6 +22,7 @@ class controllerDevolucion{
                 proyecto : activo.nombrepro ,
                 observaciones : data.Observaciones
             }
+            await pool.query(`INSERT INTO public.historial_devoluciones (fecha_devolucion, empleado_id, equipo_id, detalle_devolucion) VALUES( current_date, $1, $2, $3);`,[datos.codempleado,datos.codactivo,datos.motivo])
             await pool.query(`
             UPDATE public.activos
             SET estado='Activo' ,idcondicion=$1

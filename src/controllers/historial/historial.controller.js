@@ -78,6 +78,81 @@ class controllerHistorial {
             res.status(500).send(error.message);
         }
     };
+    static async getHistorialAsignaciones(req,res){
+        try {
+            const id_act = req.params.id;
+            console.log(id_act);
+            let historial_asig  = await pool.query(`select * from historial_asignaciones ha inner join activos a on a.idactivo = ha.equipo_id inner join empleados e on e.idempleado = ha.empleado_id inner join proyectos p on p.idproyecto = ha.detalle_asignacion where ha.equipo_id = $1`,[id_act])
+            historial_asig =  historial_asig.rows;
+            if (historial_asig.length > 0 ) {
+                res.status(200).json({
+                    ok : true,
+                    data: historial_asig
+                })
+            }else{
+                console.log('no hay nada');
+                res.status(200).json({
+                    ok : false,
+                    message: 'ningun registro'
+                })
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({
+                message: error.message
+            })
+        }
+    }
+    static async getHistorialDevoluciones(req,res){
+        try {
+            const id_act = req.params.id;
+            let historial_dev = await pool.query(`select * from historial_devoluciones hd inner join empleados e on hd.empleado_id = e.idempleado where hd.equipo_id = $1`,[id_act])
+            //console.log(historial_dev);
+            historial_dev =  historial_dev.rows;
+            if (historial_dev.length > 0 ) {
+                res.status(200).json({
+                    ok : true,
+                    data: historial_dev
+                })
+            }else{
+                console.log('no hay nada');
+                res.status(200).json({
+                    ok : false,
+                    message: 'ningun registro'
+                })
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({
+                message: error.message
+            })
+        }
+    }
+    static async getHistorialMantenimiento(req,res){
+        try {
+            const id_act = req.params.id;
+            let historial_man  = await pool.query(`select * from historial_mantenimiento where equipo_id = $1`,[id_act])
+            historial_man =  historial_man.rows;
+            if (historial_man.length > 0 ) {
+                console.log(historial_man);
+                res.status(200).json({
+                    ok : true,
+                    data: historial_man
+                })
+            }else{
+                console.log('no hay nada');
+                res.status(200).json({
+                    ok : false,
+                    message: 'ningun registro'
+                })
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({
+                message: error.message
+            })
+        }
+    }
 
 
 }
