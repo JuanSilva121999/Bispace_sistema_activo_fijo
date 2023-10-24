@@ -19,7 +19,7 @@ class controllerFuncionario {
     };
     static async getFuncionario(req, res) {
         try {
-            const result = await pool.query("SELECT * FROM empleados");
+            const result = await pool.query("SELECT * FROM empleados e inner join ambientes a on a.idambiente = e.idambient inner join edificios ed on ed.idedificio = a.idedificio");
             //const resultados = connection[0];
             //console.log(resultados);
             res.status(200).send({ funcionarios: result.rows });

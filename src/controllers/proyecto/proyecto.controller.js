@@ -18,7 +18,7 @@ class controllerProyecto {
     };
     static async getProyecto(req, res) {
         try {
-            const result = await pool.query("SELECT * FROM proyectos");
+            const result = await pool.query("SELECT * FROM proyectos pr inner join programas pg on pg.idprograma =  pr.idprograma");
             res.status(200).send({ proyectos: result.rows });
         } catch (error) {
             res.status(500).send(error.message);

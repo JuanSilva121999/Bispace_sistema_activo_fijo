@@ -2198,7 +2198,7 @@ COPY activo_fijo.usuarios (idusuario, idemplead, email, password, rol, estado) F
 -- Data for Name: activos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-/*COPY public.activos (idactivo, idtipo, imagen, procedencia, descripcion, fecharegistro, valorregistro, valoractual, vidautilactual, observaciones, ufvinicial, estado, anio, mes, idcondicion, idrubro, idproveedor, factura, garantia) FROM stdin;
+COPY public.activos (idactivo, idtipo, imagen, procedencia, descripcion, fecharegistro, valorregistro, valoractual, vidautilactual, observaciones, ufvinicial, estado, anio, mes, idcondicion, idrubro, idproveedor, factura, garantia) FROM stdin;
 20	1	OCVwLlJf5d2Gh2NlNdnauzef.jpg	Compra	Mesa Gamer DF430	2023-10-23 11:02:25.498558	15000.00	15000.00	0	Ninguna	2.122552	En Espera	0	0	1	2	4	IYEwdQZ1j1QOlWWUl86CCRZL.jpg	gfd54321
 11	3	sz1XOrIF8P3MWBciUy0BP0SE.jpg	Compra	Dell Core I 7 	2023-09-22 18:12:55.358676	1500.00	937.50	0	Se adiciono un nuevo disco de 500GB	2.432170	En Uso	0	0	1	3	4	jiDhodalSxRR-ArkYmUMxQPM.jpg	gfd54321
 21	3	XZkrUOudBbqdqxY5h-UPNqG-.jpg	Compra	Dell Core I-7 SSD 500 Ram 8G 	2023-10-23 11:05:16.96844	25000.00	25000.00	0		2.215623	En Espera	0	0	1	3	4	bJgkorSm4hUrZBkX8HyZwwyU.jpg	gfd54321
@@ -2238,12 +2238,12 @@ COPY public.altaactivos (idalta, codificacion, fechahora, qr, idactiv, idemplead
 --
 -- Data for Name: ambientes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-*/
+
 COPY public.ambientes (idambiente, nombreamb, descripcionamb, idedificio) FROM stdin;
 1	Sistemas	Area de Desarrollo de Sistemas\n	1
---6	Secretaria	Área de Secretarias	1
+6	Secretaria	Área de Secretarias	1
 \.
-/*
+
 
 --
 -- Data for Name: bajas; Type: TABLE DATA; Schema: public; Owner: postgres
@@ -2308,25 +2308,25 @@ COPY public.devoluciones (iddevolucion, codactivo, codempleado, idcondici, motiv
 --
 -- Data for Name: edificios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-*/
+
 COPY public.edificios (idedificio, nombreedi, servicio, direccion, idubicacion, latitud, longitud) FROM stdin;
---2	Centro Comercial	Desarrollo de software	Calle Murillo	3	-16.496827	-68.137443
+2	Centro Comercial	Desarrollo de software	Calle Murillo	3	-16.496827	-68.137443
 1	Sede Principal	Desarrollo deSoftware	San Fransico	3	-16.496827	-68.137443
 \.
 
-/*
+
 --
 -- Data for Name: empleados; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-*/
+
 COPY public.empleados (idempleado, nombres, apellidos, cargo, telefono, direccion, idambient) FROM stdin;
---1	Juan Alberto	Silva Cayo	pasante	63215576	Juan Pablo II	1
---6	juan	silva	sdsd	63215576	bolivia	1
-1	admin	admin	admin	12345678	admin	1
---12	Cajero	Cajero	Cajero	65432108	Cajero	1
+1	Juan Alberto	Silva Cayo	pasante	63215576	Juan Pablo II	1
+6	juan	silva	sdsd	63215576	bolivia	1
+11	admin	admin	admin	12345678	admin	1
+12	Cajero	Cajero	Cajero	65432108	Cajero	1
 \.
 
-/*
+
 --
 -- Data for Name: historial_asignaciones; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -2486,13 +2486,13 @@ COPY public.ubicaciones (idubicacion, nombrelugar) FROM stdin;
 --
 -- Data for Name: usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
-*/
+
 COPY public.usuarios (idusuario, idemplead, email, password, rol, estado) FROM stdin;
---1	1	alberto@gmail.com	$2b$10$UW/.spSbyHzI/Z7WE0d0Cu.jesaBh/RtxI3s6PjPkczl.3L/GNEku	ADMIN	ACTIVO
---2	1	juan.silva12121999@gmail.com	$2b$10$r78nNmPSm9x.yXalXMoi3uOMdQ1tmqFyEM/4P7TqGDw0wUBDDUmqS	ADMIN	ACTIVO
-1	11	admin@admin.com	$2b$10$jxWpItIdooPXWzJryTiL8O2/o20Ko8eKDm2Np/zBxYVoTj9jW86Ya	ADMIN	ACTIVO
---3	1	juan@gmail.com	$2b$10$TlEIRf55zk1nYdnqsZ.FVOym31u63CRKqVXsGAUTJAKbMNKVdJV.a	ADMIN	ACTIVO
---5	12	cajero@admin.com	$2b$10$h6Wy1Kuq0uHFOjmfQOCYC.JUMPd735yIwSZQHVDkx3Go/JWp0sQMi	R.ALAMACEN	ACTIVO
+1	1	alberto@gmail.com	$2b$10$UW/.spSbyHzI/Z7WE0d0Cu.jesaBh/RtxI3s6PjPkczl.3L/GNEku	ADMIN	ACTIVO
+2	1	juan.silva12121999@gmail.com	$2b$10$r78nNmPSm9x.yXalXMoi3uOMdQ1tmqFyEM/4P7TqGDw0wUBDDUmqS	ADMIN	ACTIVO
+4	11	admin@admin.com	$2b$10$jxWpItIdooPXWzJryTiL8O2/o20Ko8eKDm2Np/zBxYVoTj9jW86Ya	ADMIN	ACTIVO
+3	1	juan@gmail.com	$2b$10$TlEIRf55zk1nYdnqsZ.FVOym31u63CRKqVXsGAUTJAKbMNKVdJV.a	ADMIN	ACTIVO
+5	12	cajero@admin.com	$2b$10$h6Wy1Kuq0uHFOjmfQOCYC.JUMPd735yIwSZQHVDkx3Go/JWp0sQMi	R.ALAMACEN	ACTIVO
 \.
 
 
@@ -2500,9 +2500,9 @@ COPY public.usuarios (idusuario, idemplead, email, password, rol, estado) FROM s
 -- Data for Name: valordepreciacion; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-/*COPY public.valordepreciacion (id, fecha_actual, valor) FROM stdin;
+COPY public.valordepreciacion (id, fecha_actual, valor) FROM stdin;
 3	2023-09-28 15:04:44.292749	3.25
-\.*/
+\.
 
 
 --

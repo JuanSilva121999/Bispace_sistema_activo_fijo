@@ -50,11 +50,12 @@ class controllerUsuario {
     };
     static async getUsuario(req, res) {
         try {
-            const result = await pool.query("SELECT * FROM usuarios");
+            const result = await pool.query("SELECT * FROM usuarios u inner join empleados e on u.idemplead = e.idempleado");
             //const resultados = connection[0];
             //console.log(resultados);
             res.status(200).send({ usuarios: result.rows });
         } catch (error) {
+            console.log(error.message);
             res.status(500).send(error.message);
         }
     };

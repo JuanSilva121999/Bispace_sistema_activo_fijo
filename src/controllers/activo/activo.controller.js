@@ -17,11 +17,11 @@ class controllerActivo {
         if (req.files) {
             const imagen_path = req.files.Imagen.path;
             //console.log(imagen_path);
-            const name = imagen_path.split('\\');
+            const name = imagen_path.split('/');
             const imagen_name = name[3];
 
             const factura_path = req.files.Factura.path;
-            const factura = factura_path.split('\\');
+            const factura = factura_path.split('/');
             const factura_name = factura[3];
             const activo = {
                 idTipo: data.idTipo,

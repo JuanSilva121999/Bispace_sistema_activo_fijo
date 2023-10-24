@@ -12,10 +12,11 @@ class controllerRublo {
                 VidaUtil: data.VidaUtil,
                 Depreciable: data.Depreciable,
                 CoeficienteD: data.CoeficienteD / 100,
-                Actualiza: data.Actualiza
+                Actualiza: data.Actualiza,
+                Codigo : data.Codigo
             }
-            const query='INSERT INTO rubros (nombre,vidautil,depreciable,coeficiented,actualiza)VALUES($1,$2,$3,$4,$5)';
-            const values =[rubro.Nombre,rubro.VidaUtil,rubro.Depreciable,rubro.CoeficienteD, rubro.Actualiza]
+            const query='INSERT INTO rubros (nombre,vidautil,depreciable,coeficiented,actualiza,cod)VALUES($1,$2,$3,$4,$5,$6)';
+            const values =[rubro.Nombre,rubro.VidaUtil,rubro.Depreciable,rubro.CoeficienteD, rubro.Actualiza,rubro.Codigo]
             const result = await pool.query(query,values);
             res.status(200).json(result.rows[0]);
         } catch (error) {
