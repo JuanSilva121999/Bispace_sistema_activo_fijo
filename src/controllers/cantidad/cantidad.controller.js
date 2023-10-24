@@ -104,7 +104,7 @@ class controllerCantidad{
     };
     static async getCantidadEdificios(req,res){
         try {
-            const cant_edificios =  await pool.query(`select count (*) as "edificios" from edificios ed`)
+            const cant_edificios =  await pool.query(`select count (*) as "edificios" from proyectos ed`)
             if (cant_edificios.rows) {
                 res.status(200).send({
                     edificios: cant_edificios.rows
