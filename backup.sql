@@ -2050,7 +2050,7 @@ ALTER TABLE ONLY public.usuarios ALTER COLUMN idusuario SET DEFAULT nextval('pub
 ALTER TABLE ONLY public.valordepreciacion ALTER COLUMN id SET DEFAULT nextval('public.valordepreciacion_id_seq'::regclass);
 
 
-
+\.
 
 COPY public.ambientes (idambiente, nombreamb, descripcionamb, idedificio) FROM stdin;
 1	Sistemas	Area de Desarrollo de Sistemas\n	1
