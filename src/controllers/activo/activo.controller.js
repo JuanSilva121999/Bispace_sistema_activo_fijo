@@ -16,7 +16,7 @@ class controllerActivo {
         const data = req.body;
         if (req.files) {
             const imagen_path = req.files.Imagen.path;
-            //console.log(imagen_path);
+            console.log(imagen_path);
             const name = imagen_path.split('/');
             const imagen_name = name[3];
 
@@ -53,7 +53,7 @@ class controllerActivo {
                 const activo =  result.rows[0]
                 try {
 
-                    const query = `SELECT * FROM activos a inner join rubros r on a.idrubro =  r.idrubro where a.idactivo = $1`
+                    const query = `SELECT * FROM activos a inner join rubros r on a.idrubro =  r.idrubro inner join tiposactivos ta on ta.idtipo = a.idtipo  where a.idactivo = $1`
                     let result = await pool.query(query,[activo.idactivo])
                     result = result.rows
                     //console.log(result.length);
@@ -74,7 +74,7 @@ class controllerActivo {
     };
     static async getActivoCodigo(req, res) {
         try {
-            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion WHERE ac.Estado<>'Baja' ;"
+            const query = "SELECT * FROM activos ac INNER JOIN tiposactivos tip ON ac.idTipo=tip.idTipo INNER JOIN proveedores pro ON pro.idProveedor=ac.idProveedor INNER JOIN condiciones cond ON cond.idCondicion=ac.idCondicion inner join qr_activo qa on ac.idactivo = qa.qr_id_activo   WHERE ac.Estado<>'Baja' ;"
             const result = await pool.query(query);
             res.status(200).send({ activos: result.rows });
         } catch (error) {
@@ -91,12 +91,11 @@ class controllerActivo {
             //console.log(id, ' ', img );        
             if (req.files.Imagen) {
                 if (img || img != null || img != undefined) {
-                    fs.unlink('./src/uploads/activos/' + img, (err) => {
-                        if (err) throw err;
-                    });//eliminar la imagen
+                    
+
                 }
                 const imagen_path = req.files.Imagen.path; //asignar la ruta donde esta la imagen
-                const name = imagen_path.split('\\');//split crea un array y separa el nombre de la imagen
+                const name = imagen_path.split('/');//split crea un array y separa el nombre de la imagen
                 const imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
                 //console.log(imagen_name);
                 const activo = {
@@ -213,7 +212,8 @@ function formatDate(date) {
 }
 async function generarCodigo(datos) {
     const data = datos;
-    const inicio = 'BP';
+    const inicio = 'BS';
+    const tipo = datos.cod_tipo
     const format = datos.cod;
     const vales = await pool.query(`select qr_cod_activo from qr_activo where left(qr_cod_activo,4) ilike '${inicio}${format}'`)
     //console.log(vales.rows);
@@ -221,7 +221,7 @@ async function generarCodigo(datos) {
     //console.log(cantidad);
     const numeracion = cantidad + 1
     let numeroFormateado = numeracion.toString().padStart(4, '0');
-    const codigo = inicio + format + '-' + numeroFormateado
+    const codigo = inicio + format + tipo+'-' + numeroFormateado
     return codigo
 }
 async function procesarResult(result) {

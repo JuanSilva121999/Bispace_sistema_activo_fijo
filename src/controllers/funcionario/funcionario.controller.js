@@ -35,7 +35,9 @@ class controllerFuncionario {
             if (result.rows.length === 0) {
                 res.status(404).send('Funcionario no encontrado');
             } else {
-                res.json(result.rows[0]);
+                console.log(result.rows[0]);
+                res.status(200).json({
+                    funcionario: result.rows[0]});
             }
         } catch (error) {
             console.error(error);
@@ -43,7 +45,47 @@ class controllerFuncionario {
         }
     };
     static async putFuncionario(req, res) {
-        console.log('listar');
+        const data = req.body;
+        try {
+            console.log(data);
+            ///Validamos que el Empleado exista en la base de datos
+            const empleado =  await pool.query('select * from empleados where idempleado = $1',[data.idEmpleado])
+            console.log(empleado.rows);
+            if (empleado.rows.length >0) {
+                const newData = {
+                    nombres : data.Nombres,
+                    apellidos : data.Apellidos,
+                    cargo : data.Cargo,
+                    telefono : data.Telefono,
+                    direccion : data.Direccion,
+                    idambiente : data.idAmbiente
+                }
+                await pool.query('UPDATE public.empleados SET nombres=$1, apellidos=$2, cargo=$3, telefono=$4, direccion=$5, idambient=$6 WHERE idempleado=$7;',[
+                    newData.nombres,
+                    newData.apellidos,
+                    newData.cargo,
+                    newData.telefono,
+                    newData.direccion,
+                    newData.idambiente,
+                    data.idEmpleado
+                ])
+                res.status(200).json({
+                    ok: true,
+                    message : 'Actualizacion Completa'
+                })
+                console.log('Existe el empleado');
+            }else{
+
+                console.log('No existe el empleado');
+                res.status(404).json({
+                    ok :false,
+                    message: 'No existe el empleado'
+                })
+            }
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send(error.message);
+        }
     };
     static async deleteFuncionario(req, res) {
         const { id } = req.params;

@@ -7,6 +7,6 @@ router.get('/',controllerFuncionario.getFuncionario);
 router.get('/:id',controllerFuncionario.getFuncionarioById);
 router.put('/editar/:id',controllerFuncionario.putFuncionario);
 router.delete('/eliminar/:id',controllerFuncionario.deleteFuncionario);
-router.get('/:nombre',controllerFuncionario.getFuncionarioName);
+//router.get('/:nombre',controllerFuncionario.getFuncionarioName);
 
 module.exports=router;

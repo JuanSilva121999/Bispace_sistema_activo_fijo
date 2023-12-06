@@ -5,12 +5,12 @@ const database = require("../../database/db");
 
 class controllertipoActivo {
     static async posttipoActivo(req, res) {
-        //console.log(req.body);
+        console.log(req.body);
 
-        const { NombreActivo, DescripcionMant } = req.body;
+        const { NombreActivo, DescripcionMant,CodTipoActivo } = req.body;
         try {
-            const query =  'INSERT INTO tiposactivos (nombreactivo, descripcionmant) VALUES ($1, $2) RETURNING *';
-            const values  =  [NombreActivo, DescripcionMant];
+            const query =  'INSERT INTO tiposactivos (nombreactivo, descripcionmant,cod_tipo) VALUES ($1, $2, $3) RETURNING *';
+            const values  =  [NombreActivo, DescripcionMant,CodTipoActivo];
             const result  = await pool.query(query,values);
 
             res.status(200).json(result.rows[0]);
