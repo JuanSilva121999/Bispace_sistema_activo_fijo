@@ -49,11 +49,11 @@ class controllertipoActivo {
         console.log(req.body);
         const {id} =  req.params;
         console.log(id);
-        const {idTipo,NombreActivo,DescripcionMant}= req.body ;
+        const {idTipo,NombreActivo,DescripcionMant,CodTipoActivo}= req.body ;
         try {
             console.log(DescripcionMant);
-            const query = 'UPDATE tiposactivos SET  nombreactivo = $1, descripcionmant = $2 WHERE idtipo = $3 RETURNING *';
-            const values = [NombreActivo, DescripcionMant,id];
+            const query = 'UPDATE tiposactivos SET  nombreactivo = $1, descripcionmant = $2, cod_tipo = $3 WHERE idtipo = $4 RETURNING *';
+            const values = [NombreActivo, DescripcionMant,CodTipoActivo,id];
             const result = await pool.query(query, values);
             console.log(result.rows);
             if (result.rows.length === 0) {
@@ -69,7 +69,25 @@ class controllertipoActivo {
 
     };
     static async deletetipoActivo(req, res) {
-        console.log('listar');
+        const id =  req.params.id
+        try {
+            const data =  await pool.query('DELETE FROM tiposactivos WHERE idtipo = $1', [id]);
+            if (data.rowCount === 0) {
+                return res.status(404).send('Tipo de activo no encontrado');
+            }
+            await pool.query('DELETE FROM activos WHERE idtipo = $1', [id]);
+            res.status(200).send({
+                ok: true,
+                message : 'Tipo de activo eliminado correctamente'
+            });
+            console.log('listar');
+        } catch (error) {
+            console.log(error.message);
+            res.status(500).send({
+                ok: false,
+                message : error.message
+            })
+        }
     };
     static async gettipoActivoName(req, res) {
         console.log('listar');

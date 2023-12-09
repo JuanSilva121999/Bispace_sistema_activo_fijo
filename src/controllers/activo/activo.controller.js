@@ -18,11 +18,20 @@ class controllerActivo {
             const imagen_path = req.files.Imagen.path;
             console.log(imagen_path);
             const name = imagen_path.split('/');
-            const imagen_name = name[3];
-
+            let imagen_name = name[3];
+            if (imagen_name == undefined) {
+                const imagen_path = req.files.Imagen.path; //asignar la ruta donde esta la imagen
+                const name = imagen_path.split('\\');//split crea un array y separa el nombre de la imagen
+               imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
+            }
             const factura_path = req.files.Factura.path;
             const factura = factura_path.split('/');
-            const factura_name = factura[3];
+            let factura_name = factura[3];
+            if (factura_name == undefined) {
+                const factura_path = req.files.Factura.path; //asignar la ruta donde esta la imagen
+                const factura = factura_path.split('\\');//split crea un array y separa el nombre de la imagen
+               factura_name = factura[3];//obtiene el nombre de la imagen en el indice 2
+            }
             const activo = {
                 idTipo: data.idTipo,
                 Imagen: imagen_name,
@@ -96,8 +105,12 @@ class controllerActivo {
                 }
                 const imagen_path = req.files.Imagen.path; //asignar la ruta donde esta la imagen
                 const name = imagen_path.split('/');//split crea un array y separa el nombre de la imagen
-                const imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
-                //console.log(imagen_name);
+                let imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
+                if (imagen_name == undefined) {
+                    const imagen_path = req.files.Imagen.path; //asignar la ruta donde esta la imagen
+                    const name = imagen_path.split('\\');//split crea un array y separa el nombre de la imagen
+                   imagen_name = name[3];//obtiene el nombre de la imagen en el indice 2
+                }
                 const activo = {
                     idTipo: data.idTipo,
                     Imagen: imagen_name,
@@ -189,8 +202,8 @@ class controllerActivo {
     static async get_factura(req, res) {
         try {
             var img = req.params['fac'];
-            console.log(img);
-            console.log(img);
+            //console.log(img);
+            //console.log(img);
             if (img != "null") {//ingresamos una imagen
                 let path_img = './src/uploads/activos/' + img;
                 res.status(200).sendFile(path.resolve(path_img));
@@ -221,7 +234,7 @@ async function generarCodigo(datos) {
     //console.log(cantidad);
     const numeracion = cantidad + 1
     let numeroFormateado = numeracion.toString().padStart(4, '0');
-    const codigo = inicio + format + tipo+'-' + numeroFormateado
+    const codigo = inicio + tipo+'-' + numeroFormateado
     return codigo
 }
 async function procesarResult(result) {
