@@ -142,7 +142,7 @@ class controllerAltaActivo {
                 const values = [id];
                 const result = await pool.query(query, values);
                 if (result) {
-                    const query1 = "SELECT * FROM altaactivos al INNER JOIN ambientes am ON am.idambiente = al.idambiente INNER JOIN edificios ed ON ed.idedificio = am.idedificio INNER JOIN activos ac ON ac.idactivo = al.idactiv INNER JOIN tiposactivos tip ON tip.idtipo = ac.idtipo INNER JOIN condiciones con ON con.idcondicion = ac.idcondicion INNER JOIN proyectos pro ON pro.idproyecto = al.idproyecto WHERE al.idambiente = $1 AND (pro.nombrepro ~* '') ORDER BY al.idactiv ASC;";
+                    const query1 = "SELECT * FROM altaactivos al INNER JOIN ambientes am ON am.idambiente = al.idambiente INNER JOIN edificios ed ON ed.idedificio = am.idedificio INNER JOIN activos ac ON ac.idactivo = al.idactiv INNER JOIN tiposactivos tip ON tip.idtipo = ac.idtipo INNER JOIN condiciones con ON con.idcondicion = ac.idcondicion INNER JOIN proyectos pro ON pro.idproyecto = al.idproyecto  inner join qr_activo qa on ac.idactivo = qa.qr_id_activo WHERE al.idambiente = $1 AND (pro.nombrepro ~* '') ORDER BY al.idactiv ASC;";
                     const values1 = [id];
                     const data = await pool.query(query1, values1);
                     if (data) {
@@ -154,11 +154,11 @@ class controllerAltaActivo {
                     }
                 }
             } else {
-                const query = 'SELECT DISTINCT(al.idambiente), em.idempleado, em.nombres, em.apellidos, em.cargo, em.telefono, am.nombreamb FROM altaactivos al INNER JOIN empleados em ON em.idempleado = al.idempleado INNER JOIN ambientes am ON am.idambiente = al.idambiente WHERE al.idambiente = $1 and em.idempleado = cast ($2 as integer)' ;
+                const query = 'SELECT DISTINCT(al.idambiente), em.idempleado, em.nombres, em.apellidos, em.cargo, em.telefono, am.nombreamb, em.ci FROM altaactivos al INNER JOIN empleados em ON em.idempleado = al.idempleado INNER JOIN ambientes am ON am.idambiente = al.idambiente WHERE al.idambiente = $1 and em.idempleado = cast ($2 as integer)' ;
                 const values = [id, nombre];
                 const result = await pool.query(query, values);
                 if (result) {
-                    const query1 = "SELECT * FROM altaactivos al INNER JOIN ambientes am ON am.idambiente = al.idambiente INNER JOIN edificios ed ON ed.idedificio = am.idedificio INNER JOIN activos ac ON ac.idactivo = al.idactiv INNER JOIN tiposactivos tip ON tip.idtipo = ac.idtipo INNER JOIN condiciones con ON con.idcondicion = ac.idcondicion INNER JOIN proyectos pro ON pro.idproyecto = al.idproyecto WHERE al.idambiente = $1 AND (pro.nombrepro ~* '' ) and al.idempleado = $2 ORDER BY al.idactiv ASC;";
+                    const query1 = "SELECT * FROM altaactivos al INNER JOIN ambientes am ON am.idambiente = al.idambiente INNER JOIN edificios ed ON ed.idedificio = am.idedificio INNER JOIN activos ac ON ac.idactivo = al.idactiv INNER JOIN tiposactivos tip ON tip.idtipo = ac.idtipo INNER JOIN condiciones con ON con.idcondicion = ac.idcondicion INNER JOIN proyectos pro ON pro.idproyecto = al.idproyecto inner join qr_activo qa on ac.idactivo = qa.qr_id_activo WHERE al.idambiente = $1 AND (pro.nombrepro ~* '' ) and al.idempleado = $2 ORDER BY al.idactiv ASC;";
                     const values1 = [id,nombre];
                     const data = await pool.query(query1, values1);
                     if (data) {

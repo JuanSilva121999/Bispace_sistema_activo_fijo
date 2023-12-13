@@ -11,8 +11,8 @@ class controllerUsuario {
         try {
             console.log(req.body);
             const data = req.body;
-            const query = 'SELECT us.idUsuario, em.Nombres, em.Apellidos, us.Email, us.Password, us.Rol, us.Estado FROM usuarios us INNER JOIN empleados em ON us.idEmplead=em.idEmpleado WHERE us.Email = $1';
-            const values = [data.Email];
+            const query = 'SELECT us.idUsuario, em.Nombres, em.Apellidos,em.cargo, us.Email, us.Password, us.Rol, us.Estado, a.nombreamb ,em.ci  FROM usuarios us INNER JOIN empleados em ON us.idEmplead=em.idEmpleado inner join ambientes a on a.idambiente = em.idambient  WHERE us.Email = $1 and us.estado = $2';
+            const values = [data.Email,'ACTIVO'];
             const result = await pool.query(query, values);
             const user = result.rows;
             console.log(user.length);
@@ -44,6 +44,7 @@ class controllerUsuario {
                 res.status(403).json({ message: 'El correo no existe' });
             }
         } catch (error) {
+            console.log(error.message);
             res.status(500).send(error.message);
         }
 

@@ -4,11 +4,11 @@ const pool = require("../../database/db");
 
 class controllerFuncionario {
     static async postFuncionario(req, res) {
-        const { Nombres, Apellidos, Cargo, Telefono, Direccion, idAmbiente } = req.body;
+        const { Nombres, Apellidos, Cargo, Telefono, Direccion, idAmbiente,ciEmpleado } = req.body;
         console.log(req.body);
         try {
-            const query = 'INSERT INTO empleados (nombres, apellidos, cargo, telefono, direccion, idambient) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *';
-            const values = [Nombres, Apellidos, Cargo, Telefono, Direccion, idAmbiente];
+            const query = 'INSERT INTO empleados (nombres, apellidos, cargo, telefono, direccion, idambient, ci) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *';
+            const values = [Nombres, Apellidos, Cargo, Telefono, Direccion, idAmbiente,ciEmpleado];
             const result = await pool.query(query, values);
             res.status(201).json(result.rows[0]);
         } catch (error) {
@@ -58,15 +58,17 @@ class controllerFuncionario {
                     cargo : data.Cargo,
                     telefono : data.Telefono,
                     direccion : data.Direccion,
-                    idambiente : data.idAmbiente
+                    idambiente : data.idAmbiente,
+                    ci : data.ciEmpleado,
                 }
-                await pool.query('UPDATE public.empleados SET nombres=$1, apellidos=$2, cargo=$3, telefono=$4, direccion=$5, idambient=$6 WHERE idempleado=$7;',[
+                await pool.query('UPDATE public.empleados SET nombres=$1, apellidos=$2, cargo=$3, telefono=$4, direccion=$5, idambient=$6, ci = $7 WHERE idempleado=$8;',[
                     newData.nombres,
                     newData.apellidos,
                     newData.cargo,
                     newData.telefono,
                     newData.direccion,
                     newData.idambiente,
+                    newData.ci,
                     data.idEmpleado
                 ])
                 res.status(200).json({
