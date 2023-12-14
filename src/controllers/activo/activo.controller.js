@@ -189,7 +189,20 @@ class controllerActivo {
             res.status(200);
             if (img != "null") {//ingresamos una imagen
                 let path_img = './src/uploads/activos/' + img;
-                res.status(200).sendFile(path.resolve(path_img));
+                const data = path.resolve(path_img)
+                console.log('Imagen');
+                console.log(data);
+                fs.access(data, async (err) => {
+                    if (err) {
+                      // Archivo no existe, enviar imagen predeterminada
+                      let path_img = './src/uploads/activos/default.jpg';
+                      res.status(200).sendFile(path.resolve(path_img));
+                    } else {
+                      // Archivo existe, enviar imagen
+                      res.status(200).sendFile(path.resolve(path_img));
+                    }
+                  });                                            
+                
             } else {
                 let path_img = './src/uploads/activos/default.jpg';
                 res.status(200).sendFile(path.resolve(path_img));
@@ -206,7 +219,20 @@ class controllerActivo {
             //console.log(img);
             if (img != "null") {//ingresamos una imagen
                 let path_img = './src/uploads/activos/' + img;
-                res.status(200).sendFile(path.resolve(path_img));
+                const data = path.resolve(path_img)
+                console.log('Imagen');
+                console.log(data);
+                fs.access(data, async (err) => {
+                    if (err) {
+                      // Archivo no existe, enviar imagen predeterminada
+                      let path_img = './src/uploads/activos/default.jpg';
+                      res.status(200).sendFile(path.resolve(path_img));
+                    } else {
+                      // Archivo existe, enviar imagen
+                      res.status(200).sendFile(path.resolve(path_img));
+                    }
+                  });                                            
+                
             } else {
                 let path_img = './src/uploads/activos/default.jpg';
                 res.status(200).sendFile(path.resolve(path_img));
