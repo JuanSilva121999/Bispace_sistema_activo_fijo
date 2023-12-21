@@ -30,6 +30,7 @@ class controllerDevolucion{
             `,
             [data.CodCondicion,data.CodActivo])
             console.log(datos);
+            await pool.query(`delete from altaactivos where idactiv = $1`,[datos.codactivo])
             const result  =  await pool.query(`INSERT INTO public.devoluciones
             (codactivo, codempleado, idcondici, motivo, fechadevolucion, proyecto, observaciones)
             VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *;
